@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Producto</title>
+</head>
+<body>
+<section>
+    <div class="container custom-card-shadow" style="margin-top: 60px; margin-bottom: 90px;">
+        <div class="row">
+            <div class="col-md-12 p-5">
+                <div class="row">
+
+                    <!-- Imagen del producto -->
+                    <div class="col-md-6 text-center">
+                        <img alt="imagen del producto"
+                             th:src="@{'/img/product_image/' + ${product.productImage}}"
+                             width="330px" height="400px">
+                    </div>
+
+                    <!-- Información del producto -->
+                    <div class="col-md-6">
+                        <p class="fs-3">[[${product.productTitle}]]</p>
+
+                        <p><strong>Descripción:</strong><br>[[${product.productDescription}]]</p>
+
+                        <p>
+                            <strong>Detalles del producto:</strong><br>
+                            Estado:
+                            <span th:if="${product.productStock > 0}" class="badge bg-success">Disponible</span>
+                            <span th:unless="${product.productStock > 0}" class="badge bg-warning text-dark">Agotado</span><br>
+                            Categoría: [[${product.productCategory}]]<br>
+                            Política: 7 días de reemplazo y devolución
+                        </p>
+
+                        <p class="fs-5 fw-bold">
+                            Precio: $[[${product.discountPrice}]]
+                            <th:block th:if="${product.discount > 0}">
+                                <span class="fs-6 text-decoration-line-through text-secondary ms-2">
+                                    $[[${product.productPrice}]]
+                                </span>
+                                <span class="fs-6 text-success ms-2">
+                                    [[${product.discount}]]% de descuento
+                                </span>
+                            </th:block>
+                        </p>
+
+                        <!-- Beneficios -->
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-success text-center p-2">
+                                <i class="fas fa-money-bill-wave fa-2x"></i>
+                                <p>Pago contra reembolso</p>
+                            </div>
+                            <div class="col-md-4 text-success text-center p-2">
+                                <i class="fas fa-undo-alt fa-2x"></i>
+                                <p>Devolución disponible</p>
+                            </div>
+                            <div class="col-md-4 text-success text-center p-2">
+                                <i class="fas fa-truck-moving fa-2x"></i>
+                                <p>Envío gratis</p>
+                            </div>
+                        </div>
+
+                        <!-- Botón añadir a la cesta -->
+                        <div class="col-md-12">
+                            <th:block th:if="${product.productStock > 0}">
+                                <th:block th:if="${currentLoggedInUserDetails == null}">
+                                    <a href="/signin" class="btn btn-danger col-md-12">Añadir a la cesta</a>
+                                </th:block>
+                                <th:block th:unless="${currentLoggedInUserDetails == null}">
+                                    <a th:href="@{'/user/add-to-cart?productId=' + ${product.id} + '&userId=' + ${currentLoggedInUserDetails.id}}"
+                                       class="btn btn-danger col-md-12">Añadir a la cesta</a>
+                                </th:block>
+                            </th:block>
+                            <th:block th:unless="${product.productStock > 0}">
+                                <a href="#" class="btn btn-warning text-white col-md-12">Agotado</a>
+                            </th:block>
+                        </div>
+
+                    </div> <!-- /col-md-6 -->
+                </div> <!-- /row -->
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

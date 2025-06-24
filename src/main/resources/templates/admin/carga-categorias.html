@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="UTF-8">
+	<title>Carga Masiva de Categorías</title>
+</head>
+<body>
+<section class="container mt-5">
+	<h3 class="mb-4 text-center">Carga Masiva de Categorías</h3>
+
+	<form th:action="@{/admin/categorias/cargar}" method="post" enctype="multipart/form-data">
+		<div class="mb-3">
+			<label for="archivoCSV" class="form-label">Selecciona archivo CSV</label>
+			<input type="file" name="archivoCSV" accept=".csv" class="form-control" required>
+		</div>
+		<button type="submit" class="btn btn-primary">Subir Categorías</button>
+	</form>
+
+	<!-- Mensajes de éxito o error -->
+	<div class="mt-3" th:if="${mensaje}">
+		<div class="alert alert-success" th:text="${mensaje}"></div>
+	</div>
+	<div class="mt-3" th:if="${error}">
+		<div class="alert alert-danger" th:text="${error}"></div>
+	</div>
+</section>
+</body>
+</html>

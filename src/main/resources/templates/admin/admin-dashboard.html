@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{base-admin::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | Decorando</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <section>
+        <!-- Encabezado del Dashboard -->
+        <div class="container p-5">
+            <h3 class="m-4 text-center">Panel de Administración</h3>
+            
+            <!-- Alertas -->
+            <div th:if="${message}" class="alert" th:classappend="${'alert-' + messageType}" role="alert">
+                <span th:text="${message}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${productMessage}" class="alert mt-3" th:classappend="${productSuccess ? 'alert-success' : 'alert-danger'}">
+                <i th:class="${productSuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'}"></i>
+                <span th:text="${productMessage}"></span>
+            </div>
+            <div th:if="${categoryMessage}" class="alert mt-3" th:classappend="${categorySuccess ? 'alert-success' : 'alert-danger'}">
+                <i th:class="${categorySuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'}"></i>
+                <span th:text="${categoryMessage}"></span>
+            </div>
+            
+            <!-- Tarjetas de Administración Principal -->
+            <div class="row p-4">
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/category" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-layer-group fa-3x"></i>
+                                <h4 class="mt-1">Gestionar Categorías</h4> 
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/add-product" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-square-plus fa-3x"></i>
+                                <i class="fa-brands fa-product-hunt fa-3x"></i>
+                                <h4 class="mt-1">Añadir Productos</h4> 
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/product-list" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-cube fa-3x"></i>
+                                <h4 class="mt-1">Ver Productos</h4> 
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/orders" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-cubes fa-3x"></i>
+                                <h4 class="mt-1">Gestionar Pedidos</h4>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/inventory" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-boxes-stacked fa-3x"></i>
+                                <h4 class="mt-1">Gestionar Inventario</h4>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/get-all-users" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-users fa-3x"></i>
+                                <h4 class="mt-1">Gestionar Usuarios</h4> 
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="/admin/advanced-inventory-report" target="_blank" class="text-decoration-none">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fas fa-file-pdf fa-3x"></i>
+                                <h4 class="mt-1">Reporte Inventario</h4>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 mt-3">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCarga">
+                        <div class="card custom-card-shadow">
+                            <div class="card-body text-center text-primary">
+                                <i class="fa-solid fa-upload fa-3x"></i>
+                                <h4 class="mt-1">Carga Masiva de Datos</h4> 
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sección de Reportes -->
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Reportes de Inventario</h5>
+                </div>
+                <div class="card-body">
+                    <p>Genera reportes en PDF para visualizar el inventario:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="/admin/simple-pdf-report" target="_blank" class="btn btn-primary w-100 mb-2">
+                                <i class="fas fa-file-pdf"></i> Reporte de Cortinas en Stock
+                            </a>
+                        </div>
+                     <div class="col-md-6">
+    <a href="/admin/sales-pdf" target="_blank" class="btn btn-danger w-100 mb-2">
+        <i class="fas fa-file-invoice-dollar"></i> Reporte de Ventas (PDF)
+    </a>
+</div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección de Marketing -->
+            <div class="card mt-4 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Marketing y Promociones</h5>
+                </div>
+                <div class="card-body">
+                    <p>Gestiona las campañas de marketing y comunicación con clientes:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="/admin/email-promotions" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-envelope"></i> Enviar Promociones por Correo
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-secondary w-100 mb-2 disabled">
+                                <i class="fas fa-bullhorn"></i> Campañas de Descuento
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor de gráficas -->
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">Productos más vendidos</div>
+                        <div class="card-body">
+                            <canvas id="chartTopProducts" style="min-height:300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">Movimientos por tipo</div>
+                        <div class="card-body">
+                            <canvas id="chartMovementCounts" style="min-height:300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Carga Masiva de Datos -->
+        <div class="modal fade" id="modalCarga" tabindex="-1" aria-labelledby="modalCargaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="modalCargaLabel">Carga Masiva de Datos</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs" id="cargaTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productosTab" type="button" role="tab" aria-controls="productosTab" aria-selected="true">
+                                    <i class="fas fa-cube"></i> Productos
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="categorias-tab" data-bs-toggle="tab" data-bs-target="#categoriasTab" type="button" role="tab" aria-controls="categoriasTab" aria-selected="false">
+                                    <i class="fas fa-layer-group"></i> Categorías
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content p-3" id="cargaTabContent">
+                            <!-- Productos -->
+                            <div class="tab-pane fade show active" id="productosTab" role="tabpanel" aria-labelledby="productos-tab">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Suba un archivo Excel o CSV con los datos de productos.
+                                    <a href="/admin/download-product-template" class="alert-link">Descargar plantilla</a>
+                                </div>
+                                <form action="/admin/upload-products" method="post" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="archivoProductos" class="form-label">Seleccione el archivo</label>
+                                        <input type="file" class="form-control" id="archivoProductos" name="archivo" accept=".xlsx,.xls,.csv" required>
+                                        <div class="form-text">Formatos aceptados: CSV, Excel (.xlsx, .xls)</div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-upload"></i> Subir Archivo
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="mt-4">
+                                    <h6>Formato esperado:</h6>
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>product_title</th>
+                                                <th>product_description</th>
+                                                <th>product_price</th>
+                                                <th>discount</th>
+                                                <th>product_stock</th>
+                                                <th>product_category</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Cortina Flores</td>
+                                                <td>Cortina de flores bonita</td>
+                                                <td>50.99</td>
+                                                <td>10</td>
+                                                <td>15</td>
+                                                <td>CORTINAS MODERNAS</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Categorías -->
+                            <div class="tab-pane fade" id="categoriasTab" role="tabpanel" aria-labelledby="categorias-tab">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Suba un archivo Excel o CSV con los datos de categorías.
+                                    <a href="/admin/download-category-template" class="alert-link">Descargar plantilla</a>
+                                </div>
+                                <form action="/admin/upload-categories" method="post" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="archivoCategorias" class="form-label">Seleccione el archivo</label>
+                                        <input type="file" class="form-control" id="archivoCategorias" name="archivo" accept=".xlsx,.xls,.csv" required>
+                                        <div class="form-text">Formatos aceptados: CSV, Excel (.xlsx, .xls)</div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-upload"></i> Subir Archivo
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="mt-4">
+                                    <h6>Formato esperado:</h6>
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>category_name</th>
+                                                <th>category_image (opcional)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>CORTINAS MODERNAS</td>
+                                                <td>cortinas.jpg</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    fetch(/*[[ @{/admin/stats/top-products(limit=5)} ]]*/)
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(d => d.productName);
+            const values = data.map(d => d.totalSold);
+            new Chart(document.getElementById('chartTopProducts'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Unidades vendidas',
+                        data: values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+
+    fetch(/*[[ @{/admin/stats/movement-counts} ]]*/)
+        .then(res => res.json())
+        .then(data => {
+            const tipoMap = {
+                IN: 'Entrada',
+                OUT: 'Salida',
+                RETURN: 'Devolución',
+                DAMAGED: 'Producto dañado'
+            };
+            const labels = data.map(d => tipoMap[d.type] || d.type);
+            const values = data.map(d => d.count);
+            new Chart(document.getElementById('chartMovementCounts'), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#FF8C00']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        });
+/*]]>*/
+</script>
+</section>
+</body>
+</html>

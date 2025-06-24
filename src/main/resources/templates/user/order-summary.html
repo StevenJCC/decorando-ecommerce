@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen de Pedido</title>
+</head>
+<body>
+<section class="container mt-5">
+    <h2 class="text-center mb-4">Resumen de Pedidos</h2>
+
+    <div th:if="${orders.size() == 0}" class="alert alert-warning text-center">
+        No tienes pedidos aún.
+    </div>
+
+    <div th:each="order : ${orders}" class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Orden ID: [[${order.orderId}]]</h5>
+
+            <p><strong>Producto:</strong> [[${order.product.productTitle}]]</p>
+            <p><strong>Cantidad:</strong> [[${order.quantity}]]</p>
+            <p><strong>Precio Unitario:</strong> $ [[${order.product.discountPrice}]]</p>
+            <p><strong>Subtotal:</strong> $ [[${order.price}]]</p>
+            <p><strong>Método de pago:</strong> [[${order.paymentType}]]</p>
+
+            <hr>
+            <h6 class="mt-3">Dirección de Entrega</h6>
+            <p><strong>Nombre:</strong> [[${order.orderAddress.firstName}]] [[${order.orderAddress.lastName}]]</p>
+            <p><strong>Email:</strong> [[${order.orderAddress.email}]]</p>
+            <p><strong>Teléfono:</strong> [[${order.orderAddress.mobile}]]</p>
+            <p><strong>Dirección:</strong> [[${order.orderAddress.address}]], [[${order.orderAddress.city}]], [[${order.orderAddress.state}]], CP: [[${order.orderAddress.pinCode}]]</p>
+
+            <p><strong>Estado:</strong> [[${order.status}]]</p>
+            <p><strong>Fecha:</strong> [[${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}]]</p>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base-admin :: layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+</head>
+<body>
+<section class="container mt-4">
+    <h2 class="text-center mb-4">Lista de usuarios</h2>
+
+    <a href="/admin/add-user" class="btn btn-success mb-3">
+        <i class="fa fa-plus"></i> Agregar usuario
+    </a>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+            <tr>
+                <th>SL N°</th>
+                <th>Perfil</th>
+                <th>Nombre</th>
+                <th>Correo electrónico</th>
+                <th>Habilitado</th>
+                <th>Bloqueado</th>
+                <th>Creado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user, iterStat : ${userData}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${user.role}"></td>
+                <td th:text="${user.fullName}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.isEnable ? 'Sí' : 'No'}"></td>
+                <td th:text="${user.accountStatusNonLocked ? 'Sí' : 'No'}"></td>
+                <td th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                <td>
+                    <a th:href="@{'/admin/edit-user/' + ${user.id}}" class="btn btn-sm btn-primary">Editar</a>
+                    <a th:href="@{'/admin/delete-user/' + ${user.id}}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(userData)}">
+                <td colspan="8" class="text-center text-muted">No hay usuarios registrados</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

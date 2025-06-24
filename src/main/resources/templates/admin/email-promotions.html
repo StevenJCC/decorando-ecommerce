@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Enviar Promociones | Decorando</title>
+</head>
+<body>
+    <section>
+        <div class="container p-5">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h3 class="text-center">Enviar Promociones por Correo</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Alertas de éxito o error -->
+                            <div th:if="${success}" class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                            </div>
+                            <div th:if="${error}" class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                            </div>
+                            
+                            <form th:action="@{/admin/send-promotion-email}" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="userType" class="form-label">Destinatarios</label>
+                                    <select class="form-select" id="userType" name="userType">
+                                        <option value="all" selected>Todos los usuarios</option>
+                                        <option value="customer">Solo Clientes</option>
+                                        <option value="admin">Solo Administradores</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Asunto</label>
+                                    <input type="text" class="form-control" id="subject" name="subject" 
+                                        placeholder="Ej: Ofertas Especiales en Decorando" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Mensaje (HTML permitido)</label>
+                                    <textarea class="form-control" id="message" name="message" 
+                                        rows="10" required></textarea>
+                                    <small class="form-text text-muted">
+                                        Puedes usar etiquetas HTML para dar formato al mensaje.
+                                    </small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="attachment" class="form-label">Adjunto (opcional)</label>
+                                    <input class="form-control" type="file" id="attachment" name="attachment">
+                                    <small class="form-text text-muted">
+                                        Tamaño máximo: 10MB. Formatos recomendados: PDF, JPG, PNG.
+                                    </small>
+                                </div>
+                                
+                                <!-- Plantillas predefinidas -->
+                                <div class="mb-4">
+                                    <label class="form-label">Plantillas rápidas</label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-primary btn-sm template-btn" 
+                                            data-template="bienvenida">Bienvenida</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm template-btn" 
+                                            data-template="oferta">Oferta Especial</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm template-btn" 
+                                            data-template="descuento">Código Descuento</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3 border-top pt-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="/admin" class="btn btn-secondary w-100">
+                                                <i class="fas fa-arrow-left"></i> Volver al Panel
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <i class="fas fa-paper-plane"></i> Enviar Correos
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Información adicional -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Consejos para correos de marketing efectivos</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>Utiliza un asunto claro y atractivo.</li>
+                                <li>Sé breve y directo en tu mensaje.</li>
+                                <li>Incluye una llamada a la acción clara.</li>
+                                <li>Prueba la visualización en diferentes dispositivos.</li>
+                                <li>Evita palabras que puedan activar filtros de spam.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- JavaScript para las plantillas de correo -->
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const templateButtons = document.querySelectorAll('.template-btn');
+                const messageTextarea = document.getElementById('message');
+                const subjectInput = document.getElementById('subject');
+                
+                const templates = {
+                    bienvenida: {
+                        subject: "Bienvenido a Decorando - Tu tienda de decoración favorita",
+                        message: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <h2 style="color: #4CAF50;">¡Bienvenido a Decorando!</h2>
+                                <p>Estamos encantados de tenerte con nosotros.</p>
+                                <p>En <strong>Decorando</strong> encontrarás los mejores productos para hacer de tu hogar un espacio único y acogedor.</p>
+                                <p>Disfruta de un <strong>10% de descuento</strong> en tu primera compra utilizando el código: <strong>BIENVENIDO10</strong></p>
+                                <p style="margin-top: 20px;">Visita nuestra tienda online: <a href="https://decorando.com" style="color: #4CAF50;">decorando.com</a></p>
+                                <p>¡Gracias por unirte a nuestra familia!</p>
+                            </div>
+                        `
+                    },
+                    oferta: {
+                        subject: "¡Ofertas especiales solo este fin de semana!",
+                        message: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <h2 style="color: #FF5722;">¡OFERTAS ESPECIALES!</h2>
+                                <p>Solo este fin de semana, disfruta de descuentos de hasta el <strong>50%</strong> en productos seleccionados.</p>
+                                <div style="background-color: #FFF3E0; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                                    <h3 style="color: #FF5722; margin-top: 0;">Productos destacados:</h3>
+                                    <ul>
+                                        <li>Cortinas de diseño - <span style="text-decoration: line-through;">$99.99</span> <strong>$49.99</strong></li>
+                                        <li>Cojines decorativos - <span style="text-decoration: line-through;">$29.99</span> <strong>$14.99</strong></li>
+                                        <li>Lámparas modernas - <span style="text-decoration: line-through;">$79.99</span> <strong>$39.99</strong></li>
+                                    </ul>
+                                </div>
+                                <p style="font-size: 18px; font-weight: bold;">¡No pierdas esta oportunidad única!</p>
+                                <p style="margin-top: 20px;"><a href="https://decorando.com/ofertas" style="background-color: #FF5722; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">VER TODAS LAS OFERTAS</a></p>
+                            </div>
+                        `
+                    },
+                    descuento: {
+                        subject: "Tu código de descuento exclusivo está aquí",
+                        message: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; text-align: center;">
+                                <h2 style="color: #3F51B5;">CÓDIGO DE DESCUENTO EXCLUSIVO</h2>
+                                <p>Porque eres un cliente especial, te regalamos un <strong>15% de descuento</strong> en tu próxima compra.</p>
+                                <div style="background-color: #E8EAF6; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                                    <h1 style="color: #3F51B5; letter-spacing: 5px; font-size: 32px;">DECORANDO15</h1>
+                                </div>
+                                <p>Este código es válido hasta el 30 de diciembre. Aplica a todos los productos de nuestra tienda.</p>
+                                <p style="margin-top: 20px;"><a href="https://decorando.com/tienda" style="background-color: #3F51B5; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">IR A COMPRAR</a></p>
+                                <p style="color: #666; font-size: 12px; margin-top: 20px;">*Aplican términos y condiciones. No acumulable con otras promociones.</p>
+                            </div>
+                        `
+                    }
+                };
+                
+                templateButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const templateName = this.getAttribute('data-template');
+                        const template = templates[templateName];
+                        
+                        if (template) {
+                            subjectInput.value = template.subject;
+                            messageTextarea.value = template.message;
+                        }
+                    });
+                });
+            });
+        </script>
+    </section>
+</body>
+</html>

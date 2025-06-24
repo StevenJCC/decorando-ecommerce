@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario | Decorando</title>
+</head>
+<body th:replace="~{base-admin::layout(~{::section})}">
+
+<section class="container mt-5">
+    <div class="d-flex justify-content-between mb-3">
+        <h3 class="text-center w-100"><i class="fas fa-warehouse me-2"></i>Gestión de Inventario</h3>
+        <a href="/admin/" class="btn btn-outline-primary ms-2"><i class="fa fa-arrow-left"></i> Volver</a>
+    </div>
+
+    <div class="card shadow p-4">
+        <h5 class="mb-4"><i class="fas fa-plus-circle text-success"></i> Registrar nuevo movimiento</h5>
+        <form th:action="@{/admin/inventory/add}" method="post" th:object="${newMovement}">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Producto ID</label>
+                    <input type="number" th:field="*{productId}" class="form-control" min="1" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo</label>
+                    <select th:field="*{movementType}" class="form-select" required>
+                        <option value="">-- Selecciona tipo --</option>
+                        <option th:each="entry : ${movementTypeLabels.entrySet()}"
+                                th:value="${entry.key}"
+                                th:text="${entry.value}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" th:field="*{quantity}" class="form-control" min="1" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Comentario</label>
+                    <input type="text" th:field="*{comment}" class="form-control" />
+                </div>
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary px-5">
+                        <i class="fas fa-plus-circle"></i> Registrar movimiento
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alerta visual profesional para filtros -->
+    <div class="alert alert-info alert-dismissible fade show mt-4"
+         role="alert"
+         th:if="${selectedType != null or from != null or to != null}">
+        <i class="fas fa-filter me-2"></i>
+        Filtros aplicados correctamente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow mt-4 p-4">
+        <h5 class="mb-4"><i class="fas fa-filter text-secondary"></i> Filtrar movimientos</h5>
+        <form th:action="@{/admin/inventory}" method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Tipo de movimiento</label>
+                <select name="type" class="form-select">
+                    <option value="" th:selected="${selectedType == null}">Todos</option>
+                    <option th:each="entry : ${movementTypeLabels.entrySet()}"
+                            th:value="${entry.key}"
+                            th:text="${entry.value}"
+                            th:selected="${entry.key == selectedType}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Fecha desde</label>
+                <input type="datetime-local" name="from" class="form-control"
+                       th:value="${from != null} ? ${#temporals.format(from, 'yyyy-MM-dd\'T\'HH:mm')} : ''" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Fecha hasta</label>
+                <input type="datetime-local" name="to" class="form-control"
+                       th:value="${to != null} ? ${#temporals.format(to, 'yyyy-MM-dd\'T\'HH:mm')} : ''" />
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-dark px-4">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card shadow mt-5 mb-5">
+        <div class="card-body">
+            <h5 class="mb-3"><i class="fas fa-history text-secondary"></i> Histórico de movimientos</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Fecha</th>
+                            <th>Comentario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${movements}">
+                            <td th:text="${m.id}"></td>
+                            <td th:text="${m.productId}"></td>
+                            <td th:text="${movementTypeLabels[m.movementType]}"></td>
+                            <td th:text="${m.quantity}"></td>
+                            <td th:text="${#temporals.format(m.movementDate, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${m.comment}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(movements)}">
+                            <td colspan="6">No hay movimientos registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

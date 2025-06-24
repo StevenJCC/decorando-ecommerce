@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen del Pedido</title>
+</head>
+<body>
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+
+                <!-- Mensajes -->
+                <div th:if="${session.successMsg}" class="alert alert-success text-center">
+                    <span th:text="${session.successMsg}"></span>
+                </div>
+                <div th:if="${session.errorMsg}" class="alert alert-danger text-center">
+                    <span th:text="${session.errorMsg}"></span>
+                </div>
+
+                <p class="fs-4 text-center">Resumen del Pedido</p>
+                <hr>
+
+                <!-- Tabla de resumen -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>Subtotal de Productos</td>
+                                    <td>:</td>
+                                    <td th:text="'$' + ${orderPriceFormatted}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Costo de Envío</td>
+                                    <td>:</td>
+                                    <td id="shipping-cost">$<span th:text="${shippingCostFormatted}"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Impuestos</td>
+                                    <td>:</td>
+                                    <td th:text="'$' + ${taxFormatted}"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Final</strong></td>
+                                    <td>:</td>
+                                    <td><strong id="total-price">$<span th:text="${totalOrderPriceFormatted}"></span></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Formulario de envío -->
+                <form th:action="@{/user/orders}" method="post">
+                    <input type="hidden" name="orderPrice" th:value="${orderPrice}" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Nombre:</label>
+                            <input type="text" name="firstName" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Apellido:</label>
+                            <input type="text" name="lastName" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Email:</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Teléfono:</label>
+                            <input type="text" name="mobile" class="form-control" required>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label>Dirección:</label>
+                            <textarea name="address" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Ciudad:</label>
+                            <input type="text" name="city" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Departamento:</label>
+                            <input type="text" name="state" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Tipo de envío -->
+                    <div class="mb-3">
+                        <label>Tipo de Envío</label>
+                        <select class="form-control" name="shippingMethod" id="shippingMethod" required>
+                            <option value="standard">Entrega Estándar ($10.000)</option>
+                            <option value="express">Entrega Hoy ($20.000)</option>
+                            <option value="pickup">Recoger en Tienda (Gratis)</option>
+                        </select>
+                    </div>
+
+                    <!-- Método de pago -->
+                    <div class="mb-3">
+                        <label>Método de Pago</label>
+                        <select class="form-control" name="paymentMethod" required>
+                            <option value="CASH">Efectivo</option>
+                            <option value="CARD">Tarjeta</option>
+                            <option value="PSE">PSE</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger btn-lg">Realizar Pedido</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ✅ Script para actualizar precios dinámicamente -->
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const shippingSelect = document.getElementById('shippingMethod');
+        const orderPrice = /*[[${orderPrice}]]*/ 0;
+        const tax = /*[[${tax}]]*/ 0;
+
+        const shippingLabel = document.getElementById('shipping-cost');
+        const totalLabel = document.getElementById('total-price');
+
+        function updatePrices() {
+            let shippingCost = 0;
+
+            switch (shippingSelect.value) {
+                case 'standard':
+                    shippingCost = 10000;
+                    break;
+                case 'express':
+                    shippingCost = 20000;
+                    break;
+                case 'pickup':
+                    shippingCost = 0;
+                    break;
+            }
+
+            const total = orderPrice + shippingCost + tax;
+
+            shippingLabel.textContent = '$' + shippingCost.toLocaleString('es-CO');
+            totalLabel.textContent = '$' + total.toLocaleString('es-CO');
+        }
+
+        shippingSelect.addEventListener('change', updatePrices);
+        updatePrices(); // Ejecutar al cargar la página
+    });
+</script>
+
+</body>
+</html>

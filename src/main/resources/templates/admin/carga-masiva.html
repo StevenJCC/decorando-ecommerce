@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Carga Masiva | Decorando</title>
+</head>
+<body>
+	<section>
+		<div class="container p-4">
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="mb-4 text-center">Carga Masiva de Datos</h3>
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Carga Masiva</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+
+			<!-- Tarjeta de instrucciones -->
+			<div class="card mb-4 border-info">
+				<div class="card-header bg-info text-white">
+					<h5 class="mb-0"><i class="fas fa-info-circle"></i> Instrucciones para la carga masiva</h5>
+				</div>
+				<div class="card-body">
+					<p>Para realizar una carga masiva de datos siga los siguientes pasos:</p>
+					<ol>
+						<li>Descargue la plantilla correspondiente al tipo de datos que desea cargar.</li>
+						<li>Complete la plantilla con los datos requeridos (no modifique los encabezados).</li>
+						<li>Guarde el archivo en formato CSV o Excel (.xlsx).</li>
+						<li>Seleccione el archivo guardado y haga clic en "Importar datos".</li>
+					</ol>
+				</div>
+			</div>
+
+			<!-- Pestañas para productos y categorías -->
+			<ul class="nav nav-tabs" id="importTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productos" type="button" role="tab" aria-controls="productos" aria-selected="true">
+						<i class="fas fa-cube"></i> Productos
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="categorias-tab" data-bs-toggle="tab" data-bs-target="#categorias" type="button" role="tab" aria-controls="categorias" aria-selected="false">
+						<i class="fas fa-layer-group"></i> Categorías
+					</button>
+				</li>
+			</ul>
+			
+			<!-- Contenido de las pestañas -->
+			<div class="tab-content p-4 border border-top-0 rounded-bottom" id="importTabsContent">
+				<!-- Pestaña de productos -->
+				<div class="tab-pane fade show active" id="productos" role="tabpanel" aria-labelledby="productos-tab">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-4">
+								<h5>Plantilla para productos</h5>
+								<p>Descargue la plantilla para ver el formato requerido:</p>
+								<a href="/templates/plantilla_productos.xlsx" class="btn btn-outline-primary">
+									<i class="fas fa-file-excel"></i> Descargar plantilla de productos
+								</a>
+							</div>
+							
+							<div class="alert alert-warning">
+								<strong>Importante:</strong> Los campos obligatorios son: 
+								<ul>
+									<li>Título del producto</li>
+									<li>Descripción</li>
+									<li>Precio</li>
+									<li>ID de categoría</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header bg-primary text-white">
+									<h5 class="mb-0">Importar Productos</h5>
+								</div>
+								<div class="card-body">
+									<form th:action="@{/admin/importar-productos}" method="post" enctype="multipart/form-data">
+										<div class="mb-3">
+											<label for="archivoProductos" class="form-label">Seleccione el archivo</label>
+											<input type="file" class="form-control" id="archivoProductos" name="archivo" accept=".csv,.xlsx,.xls" required>
+											<div class="form-text">Formatos aceptados: CSV, Excel (.xlsx, .xls)</div>
+										</div>
+										<button type="submit" class="btn btn-primary w-100">
+											<i class="fas fa-upload"></i> Importar datos
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Mensajes de resultado para productos -->
+					<div class="mt-4" th:if="${mensajeProductos != null}">
+						<div class="alert" th:classappend="${exitoProductos ? 'alert-success' : 'alert-danger'}" role="alert">
+							<i class="fas" th:classappend="${exitoProductos ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> 
+							<span th:text="${mensajeProductos}">Resultado</span>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Pestaña de categorías -->
+				<div class="tab-pane fade" id="categorias" role="tabpanel" aria-labelledby="categorias-tab">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-4">
+								<h5>Plantilla para categorías</h5>
+								<p>Descargue la plantilla para ver el formato requerido:</p>
+								<a href="/templates/plantilla_categorias.xlsx" class="btn btn-outline-primary">
+									<i class="fas fa-file-excel"></i> Descargar plantilla de categorías
+								</a>
+							</div>
+							
+							<div class="alert alert-warning">
+								<strong>Importante:</strong> Los campos obligatorios son: 
+								<ul>
+									<li>Nombre de categoría</li>
+									<li>Descripción</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header bg-primary text-white">
+									<h5 class="mb-0">Importar Categorías</h5>
+								</div>
+								<div class="card-body">
+									<form th:action="@{/admin/importar-categorias}" method="post" enctype="multipart/form-data">
+										<div class="mb-3">
+											<label for="archivoCategorias" class="form-label">Seleccione el archivo</label>
+											<input type="file" class="form-control" id="archivoCategorias" name="archivo" accept=".csv,.xlsx,.xls" required>
+											<div class="form-text">Formatos aceptados: CSV, Excel (.xlsx, .xls)</div>
+										</div>
+										<button type="submit" class="btn btn-primary w-100">
+											<i class="fas fa-upload"></i> Importar datos
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Mensajes de resultado para categorías -->
+					<div class="mt-4" th:if="${mensajeCategorias != null}">
+						<div class="alert" th:classappend="${exitoCategorias ? 'alert-success' : 'alert-danger'}" role="alert">
+							<i class="fas" th:classappend="${exitoCategorias ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> 
+							<span th:text="${mensajeCategorias}">Resultado</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Historial de importaciones (opcional) -->
+			<div class="card mt-4">
+				<div class="card-header bg-light">
+					<h5 class="mb-0">Últimas importaciones</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="table-responsive">
+						<table class="table table-hover mb-0">
+							<thead>
+								<tr>
+									<th>Fecha</th>
+									<th>Tipo</th>
+									<th>Archivo</th>
+									<th>Estado</th>
+									<th>Registros</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Esta parte sería dinámica con Thymeleaf -->
+								<tr th:if="${importaciones != null}" th:each="imp : ${importaciones}">
+									<td th:text="${#temporals.format(imp.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:30</td>
+									<td th:text="${imp.tipo}">Productos</td>
+									<td th:text="${imp.archivo}">productos.xlsx</td>
+									<td>
+										<span class="badge" th:classappend="${imp.exitoso ? 'bg-success' : 'bg-danger'}" 
+											th:text="${imp.exitoso ? 'Éxito' : 'Error'}">Éxito</span>
+									</td>
+									<td th:text="${imp.registros}">25</td>
+								</tr>
+								<!-- Contenido de ejemplo que se mostraría si no hay datos -->
+								<tr th:if="${importaciones == null || importaciones.empty}">
+									<td colspan="5" class="text-center">No hay registros de importaciones recientes</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

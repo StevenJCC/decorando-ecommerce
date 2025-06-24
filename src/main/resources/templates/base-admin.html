@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin | Decorando</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Chart.js (cargar antes de cualquier script que lo use) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+        body {
+            background-color: #f9f9f9;
+        }
+        .navbar-brand i {
+            margin-right: 5px;
+        }
+        .table th {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold text-white" href="/">
+            <i class="fa-solid fa-cart-shopping"></i> DECORANDO
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/admin"><i class="fas fa-chart-line"></i> Panel</a></li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <!-- Mostrar menú solo si hay un usuario autenticado -->
+                <li class="nav-item dropdown"
+                    sec:authorize="isAuthenticated()" th:if="${currentLoggedInUserDetails != null}">
+                    <a class="nav-link dropdown-toggle text-white d-flex align-items-center"
+                       href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <div class="d-flex flex-column align-items-start">
+                            <span th:text="${currentLoggedInUserDetails.fullName}">Usuario</span>
+                            <small th:text="${currentLoggedInUserDetails.email}" class="text-light">correo@ejemplo.com</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li th:if="${currentLoggedInUserDetails.role == 'ROLE_ADMIN'}">
+                            <a class="dropdown-item" href="/admin/">Panel de Administración</a>
+                        </li>
+                        <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido de la página -->
+<section th:replace="${content}"></section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <small>
+        &copy; 2025 <strong>Decorando</strong> | Panel de Administración
+    </small>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+<script>
+    // Ocultar alertas automáticamente
+    window.onload = function () {
+        const success = document.querySelector('.alert-success');
+        const error = document.querySelector('.alert-danger');
+        if (success) setTimeout(() => success.style.display = 'none', 3000);
+        if (error) setTimeout(() => error.style.display = 'none', 3000);
+    };
+</script>
+</body>
+</html>

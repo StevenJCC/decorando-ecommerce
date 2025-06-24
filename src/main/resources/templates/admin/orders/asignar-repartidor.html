@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base-admin::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignar Repartidor</title>
+</head>
+<body>
+<section class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-primary"><i class="fa fa-truck"></i> Asignar Repartidor</h3>
+        <a href="/admin/orders" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i> Volver</a>
+    </div>
+
+    <!-- Resumen del pedido -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <strong>Resumen del Pedido</strong>
+        </div>
+        <div class="card-body">
+            <p><strong>ID Pedido:</strong> <span th:text="${order.id}"></span></p>
+            <p><strong>Producto:</strong> <span th:text="${order.product.productTitle}"></span></p>
+            <p><strong>Cantidad:</strong> <span th:text="${order.quantity}"></span></p>
+            <p><strong>Precio Total:</strong> <span th:text="${order.price} + ' $'"></span></p>
+            <p><strong>Cliente:</strong> <span th:text="${order.user.fullName}"></span> - 
+               <span th:text="${order.user.email}"></span></p>
+            <p th:if="${order.orderAddress != null}">
+                <strong>Dirección:</strong> <span th:text="${order.orderAddress.address}"></span>,
+                <span th:text="${order.orderAddress.city}"></span>,
+                <span th:text="${order.orderAddress.state}"></span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Formulario para asignar repartidor -->
+    <form th:action="@{/admin/orders/asignar-repartidor}" method="post" class="card shadow p-4">
+        <input type="hidden" name="orderId" th:value="${order.id}"/>
+
+        <div class="mb-3">
+            <label for="deliveryFirstName" class="form-label">Nombre del Repartidor</label>
+            <input type="text" class="form-control" id="deliveryFirstName" name="deliveryFirstName" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="deliveryLastName" class="form-label">Apellido del Repartidor</label>
+            <input type="text" class="form-control" id="deliveryLastName" name="deliveryLastName" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="deliveryPhone" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="deliveryPhone" name="deliveryPhone" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="deliveryApp" class="form-label">Aplicación</label>
+            <select class="form-select" id="deliveryApp" name="deliveryApp" required>
+                <option value="Uber">Uber</option>
+                <option value="InDrive">InDrive</option>
+                <option value="Domicilios">Domicilios</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="deliveryStatus" class="form-label">Estado del Pedido</label>
+            <select class="form-select" id="deliveryStatus" name="deliveryStatus" required>
+                <option value="ASIGNADO">Asignado</option>
+                <option value="EN CAMINO">En Camino</option>
+                <option value="ENTREGADO">Entregado</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Asignar Repartidor</button>
+    </form>
+</section>
+</body>
+</html>

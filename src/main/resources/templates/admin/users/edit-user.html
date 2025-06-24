@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{base-admin::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuario</title>
+</head>
+<body>
+
+<section>
+    <div class="container p-5">
+
+        <!-- Botón para volver al panel -->
+        <div class="mb-3 text-start">
+            <a href="/admin" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Panel
+            </a>
+        </div>
+
+        <div class="mb-4 text-center">
+            <h2 class="text-primary">Editar Usuario</h2>
+        </div>
+
+        <!-- Mensajes -->
+        <th:block th:if="${session.successMsg}">
+            <div class="alert alert-success text-center" th:text="${session.successMsg}"></div>
+        </th:block>
+        <th:block th:if="${session.errorMsg}">
+            <div class="alert alert-danger text-center" th:text="${session.errorMsg}"></div>
+        </th:block>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form th:action="@{/admin/update-user}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" th:value="${user.id}">
+
+                    <div class="mb-3">
+                        <label>Nombre:</label>
+                        <input type="text" name="firstName" class="form-control" th:value="${user.firstName}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Apellido:</label>
+                        <input type="text" name="lastName" class="form-control" th:value="${user.lastName}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email:</label>
+                        <input type="email" name="email" class="form-control" th:value="${user.email}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Rol:</label>
+                        <select name="role" class="form-control" required>
+                            <option value="ROLE_USER" th:selected="${user.role == 'ROLE_USER'}">Usuario</option>
+                            <option value="ROLE_ADMIN" th:selected="${user.role == 'ROLE_ADMIN'}">Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Estado Activo:</label>
+                        <select name="isEnable" class="form-control">
+                            <option value="true" th:selected="${user.isEnable == true}">Activo</option>
+                            <option value="false" th:selected="${user.isEnable == false}">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Cuenta Bloqueada:</label>
+                        <select name="accountStatusNonLocked" class="form-control">
+                            <option value="true" th:selected="${user.accountStatusNonLocked == true}">NO Bloqueado</option>
+                            <option value="false" th:selected="${user.accountStatusNonLocked == false}">Bloqueado</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Imagen de Perfil:</label>
+                        <input type="file" name="profileImageFile" class="form-control">
+                        <div th:if="${user.profileImage}">
+                            <img th:src="@{'/img/profile/' + ${user.profileImage}}" class="rounded mt-2" width="120" height="120">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Actualizar Usuario</button>
+                        <a href="/admin/get-all-users" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>

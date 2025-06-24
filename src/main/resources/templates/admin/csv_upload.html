@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Carga Masiva CSV - DECORANDO</title>
+</head>
+<body>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3>Carga Masiva de Datos CSV</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Alertas -->
+                        <div th:if="${message}" class="alert" th:classappend="${alertClass}" role="alert">
+                            <p th:text="${message}"></p>
+                        </div>
+
+                        <!-- Tabs para diferentes tipos de carga -->
+                        <ul class="nav nav-tabs" id="csvTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="products-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#products" type="button" role="tab" 
+                                        aria-controls="products" aria-selected="true">Productos</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="categories-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#categories" type="button" role="tab" 
+                                        aria-controls="categories" aria-selected="false">Categorías</button>
+                            </li>
+                        </ul>
+
+                        <!-- Contenido de los tabs -->
+                        <div class="tab-content p-3" id="csvTabsContent">
+                            <!-- Tab de Productos -->
+                            <div class="tab-pane fade show active" id="products" role="tabpanel" aria-labelledby="products-tab">
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <h4>Instrucciones para Carga de Productos</h4>
+                                        <p>Sube un archivo CSV con la siguiente estructura:</p>
+                                        <table class="table table-bordered table-sm">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>productTitle</th>
+                                                    <th>productDescription</th>
+                                                    <th>productCategory</th>
+                                                    <th>productPrice</th>
+                                                    <th>productStock</th>
+                                                    <th>discount</th>
+                                                    <th>isActive</th>
+                                                    <th>productImage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Cortina Infantil</td>
+                                                    <td>Descripción del producto</td>
+                                                    <td>Cortinas Infantiles</td>
+                                                    <td>29.99</td>
+                                                    <td>100</td>
+                                                    <td>10</td>
+                                                    <td>true</td>
+                                                    <td>cortina_infantil.jpg</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="alert alert-info mt-2">
+                                            <small>
+                                                <strong>Notas importantes:</strong>
+                                                <ul>
+                                                    <li>El campo productImage es opcional. Si no se proporciona, se usará una imagen por defecto.</li>
+                                                    <li>Asegúrate de que las imágenes mencionadas ya existan en el servidor (carpeta /img/product_image/).</li>
+                                                    <li>El campo discount es un porcentaje (sin el símbolo %).</li>
+                                                    <li>Los campos numéricos deben usar punto (.) como separador decimal.</li>
+                                                    <li>El discountPrice se calculará automáticamente si no se proporciona.</li>
+                                                </ul>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <form th:action="@{/admin/csv/upload/products}" method="POST" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="productCsvFile" class="form-label">Selecciona un archivo CSV</label>
+                                                <input class="form-control" type="file" id="productCsvFile" name="file" accept=".csv" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-upload me-1"></i> Cargar Productos
+                                    </button>
+                                    <a href="#" class="btn btn-outline-secondary ms-2" id="downloadProductTemplate">
+                                        <i class="fas fa-download me-1"></i> Descargar Plantilla
+                                    </a>
+                                </form>
+                            </div>
+                            
+                            <!-- Tab de Categorías -->
+                            <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <h4>Instrucciones para Carga de Categorías</h4>
+                                        <p>Sube un archivo CSV con la siguiente estructura:</p>
+                                        <table class="table table-bordered table-sm">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>categoryName</th>
+                                                    <th>categoryImage</th>
+                                                    <th>isActive</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Cortinas Modernas</td>
+                                                    <td>moderna_cat.jpg</td>
+                                                    <td>true</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="alert alert-info mt-2">
+                                            <small>
+                                                <strong>Notas importantes:</strong>
+                                                <ul>
+                                                    <li>El campo categoryImage es opcional. Si no se proporciona, se usará una imagen por defecto.</li>
+                                                    <li>Asegúrate de que las imágenes mencionadas ya existan en el servidor (carpeta /img/category/).</li>
+                                                </ul>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <form th:action="@{/admin/csv/upload/categories}" method="POST" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="categoryCsvFile" class="form-label">Selecciona un archivo CSV</label>
+                                                <input class="form-control" type="file" id="categoryCsvFile" name="file" accept=".csv" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-upload me-1"></i> Cargar Categorías
+                                    </button>
+                                    <a href="#" class="btn btn-outline-secondary ms-2" id="downloadCategoryTemplate">
+                                        <i class="fas fa-download me-1"></i> Descargar Plantilla
+                                    </a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sección de ayuda -->
+                <div class="card mt-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Consejos para la carga de CSV</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Preparación del archivo CSV</h6>
+                                <ul>
+                                    <li>Utiliza comillas dobles para campos que contengan comas.</li>
+                                    <li>Asegúrate de que los nombres de las columnas coincidan exactamente con los indicados.</li>
+                                    <li>Puedes utilizar Excel o Google Sheets y luego exportar como CSV.</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Solución de problemas comunes</h6>
+                                <ul>
+                                    <li>Si encuentras errores, revisa que los datos numéricos no contengan símbolos no permitidos.</li>
+                                    <li>Los valores booleanos deben ser "true" o "false" (sin comillas).</li>
+                                    <li>Verifica que las categorías mencionadas existan previamente en la base de datos.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts para descargar plantillas -->
+    <script>
+        // Función para descargar plantilla de productos
+        document.getElementById('downloadProductTemplate').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Datos de la plantilla
+            const headers = ['productTitle', 'productDescription', 'productCategory', 'productPrice', 
+                            'productStock', 'discount', 'isActive', 'productImage'];
+            const sampleRow = ['Cortina Infantil', 'Descripción del producto', 'Cortinas Infantiles', '29.99', 
+                              '100', '10', 'true', 'cortina_infantil.jpg'];
+            
+            // Crear el contenido del CSV
+            let csvContent = headers.join(',') + '\n' + sampleRow.join(',');
+            
+            // Crear un blob con el contenido
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Crear un enlace temporal para descargar
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'productos_plantilla.csv';
+            link.style.display = 'none';
+            
+            // Añadir el enlace al DOM, hacer clic y eliminarlo
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+        
+        // Función para descargar plantilla de categorías
+        document.getElementById('downloadCategoryTemplate').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Datos de la plantilla
+            const headers = ['categoryName', 'categoryImage', 'isActive'];
+            const sampleRow = ['Cortinas Modernas', 'moderna_cat.jpg', 'true'];
+            
+            // Crear el contenido del CSV
+            let csvContent = headers.join(',') + '\n' + sampleRow.join(',');
+            
+            // Crear un blob con el contenido
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Crear un enlace temporal para descargar
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'categorias_plantilla.csv';
+            link.style.display = 'none';
+            
+            // Añadir el enlace al DOM, hacer clic y eliminarlo
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</section>
+</body>
+</html>

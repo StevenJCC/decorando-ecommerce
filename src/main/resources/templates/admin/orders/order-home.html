@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{base-admin::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Pedidos | Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<section class="container-fluid p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="bi bi-box-seam"></i> Gestión de Pedidos</h2>
+        <a href="/admin" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+    </div>
+
+    <!-- Filtro -->
+    <form method="get" th:action="@{/admin/orders}" class="row mb-3">
+        <div class="col-md-4">
+            <select name="status" class="form-select">
+                <option th:value="''" th:selected="${currentStatus == null or currentStatus == ''}">Todos</option>
+                <option th:value="'EN PROCESO'" th:selected="${currentStatus == 'EN PROCESO'}">En Proceso</option>
+                <option th:value="'ENTREGADO'" th:selected="${currentStatus == 'ENTREGADO'}">Entregado</option>
+                <option th:value="'CANCELADO'" th:selected="${currentStatus == 'CANCELADO'}">Cancelado</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Mensajes -->
+    <div th:if="${session.successMsg}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${session.successMsg}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Tabla resumen -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Lista de Pedidos</h5>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-bordered">
+                    <thead class="table-dark text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <strong th:text="${order.user.firstName + ' ' + order.user.lastName}"></strong>
+                        </td>
+                        <td>
+                            <span th:class="'badge rounded-pill ' + 
+                                (${order.status} == 'ENTREGADO' ? 'bg-success' : 
+                                (${order.status} == 'CANCELADO' ? 'bg-danger' : 'bg-warning'))"
+                                  th:text="${order.status}"></span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                    th:data-bs-target="'#modal-' + ${order.id}">
+                                Detalles
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modales por pedido -->
+            <div th:each="order : ${orders}">
+                <div class="modal fade" th:id="'modal-' + ${order.id}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Detalles del Pedido #[[${order.id}]]</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Fecha:</strong> [[${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}]]</p>
+                                <p><strong>Cliente:</strong> [[${order.user.firstName}]] [[${order.user.lastName}]]</p>
+                                <p th:if="${order.orderAddress != null}">
+                                    <strong>Dirección:</strong> [[${order.orderAddress.address}]], 
+                                    [[${order.orderAddress.city}]], [[${order.orderAddress.state}]]
+                                </p>
+                                <p><strong>Producto:</strong> [[${order.product.productTitle}]]</p>
+                                <p><strong>Cantidad:</strong> [[${order.quantity}]]</p>
+                                <p><strong>Precio:</strong> $[[${order.price}]]</p>
+                                <p><strong>Estado:</strong> [[${order.status}]]</p>
+
+                                <p th:if="${order.deliveryAssignment != null}">
+                                    <strong>Repartidor:</strong> [[${order.deliveryAssignment.deliveryFirstName}]]
+                                    [[${order.deliveryAssignment.deliveryLastName}]]
+                                    (<small>[[${order.deliveryAssignment.deliveryApp}]]</small>)
+                                </p>
+                                <p th:if="${order.deliveryAssignment == null}">
+                                    <strong>Repartidor:</strong> No asignado.
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <a th:href="@{'/admin/orders/update-status?id=' + ${order.id} + '&status=ENTREGADO'}" class="btn btn-success btn-sm">Marcar Entregado</a>
+                                <a th:href="@{'/admin/orders/update-status?id=' + ${order.id} + '&status=CANCELADO'}" class="btn btn-danger btn-sm">Cancelar</a>
+                                <a th:href="@{'/admin/orders/asignar-repartidor?orderId=' + ${order.id}}" class="btn btn-outline-primary btn-sm">Asignar Repartidor</a>
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

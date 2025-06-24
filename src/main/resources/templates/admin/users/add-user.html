@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Usuario</title>
+</head>
+<body>
+
+<section>
+    <div class="container p-5">
+
+        <div class="mb-4 text-center">
+            <h2 class="text-primary">Agregar Nuevo Usuario</h2>
+        </div>
+
+        <!-- Mensajes -->
+        <th:block th:if="${session.successMsg}">
+            <div class="alert alert-success text-center" th:text="${session.successMsg}"></div>
+            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+        </th:block>
+        <th:block th:if="${session.errorMsg}">
+            <div class="alert alert-danger text-center" th:text="${session.errorMsg}"></div>
+            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+        </th:block>
+
+        <div class="card custom-card-shadow">
+            <div class="card-body">
+                <form th:action="@{/admin/save-user}" th:object="${user}" method="post" enctype="multipart/form-data">
+
+                    <!-- Nombre -->
+                    <div class="mb-3">
+                        <label>Nombre:</label>
+                        <input type="text" th:field="*{firstName}" class="form-control" required>
+                    </div>
+
+                    <!-- Apellido -->
+                    <div class="mb-3">
+                        <label>Apellido:</label>
+                        <input type="text" th:field="*{lastName}" class="form-control" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label>Email:</label>
+                        <input type="email" th:field="*{email}" class="form-control" required>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="mb-3">
+                        <label>Contraseña:</label>
+                        <input type="password" th:field="*{password}" class="form-control" required>
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="mb-3">
+                        <label>Rol:</label>
+                        <select th:field="*{role}" class="form-control" required>
+                            <option value="ROLE_USER" selected>Usuario</option>
+                            <option value="ROLE_ADMIN">Administrador</option>
+                        </select>
+                    </div>
+
+                    <!-- Imagen -->
+                    <div class="mb-3">
+                        <label>Imagen de Perfil:</label>
+                        <input type="file" name="profileImageFile" class="form-control">
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Guardar Usuario</button>
+                        <a href="/admin/get-all-users" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>

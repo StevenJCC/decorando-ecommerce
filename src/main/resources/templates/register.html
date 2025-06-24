@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+</head>
+<body>
+    <section>
+        <div class="container mt-5 p-5">
+            <div class="row">
+                <div class="col-md-5 p-5">
+                    <img alt="Registro de usuario" src="/img/login.jpg" width="100%" height="400px">
+                </div>
+                <div class="col-md-7 mt-3 p-5">
+                    <div class="card shadow p-3 mb-5 bg-body rounded">
+                        <div class="card-header">
+                            <p class="fs-4 text-center">Registro</p>
+                            <th:block th:if="${session.successMsg}">
+                                <p class="text-success fw-bold text-center mt-2">[[${session.successMsg}]]</p>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </th:block>
+                            <th:block th:if="${session.errorMsg}">
+                                <p class="text-danger fw-bold text-center mt-2">[[${session.errorMsg}]]</p>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </th:block>
+                        </div>
+                        <div class="card-body">
+                            <form action="/save-user" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Nombre completo</label>
+                                        <input
+                                            class="form-control"
+                                            name="name"
+                                            type="text"
+                                            required
+                                            pattern="^\S+(\s+\S+)+$"
+                                            title="Por favor ingresa nombre y apellido, por ejemplo: Kevin Rojas" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Teléfono móvil</label>
+                                        <input
+                                            class="form-control"
+                                            name="mobile"
+                                            type="text"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="col mt-3">
+                                    <label class="form-label">Correo electrónico</label>
+                                    <input
+                                        class="form-control"
+                                        name="email"
+                                        type="email"
+                                        required />
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">Dirección</label>
+                                        <input
+                                            class="form-control"
+                                            name="address"
+                                            type="text"
+                                            required />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Ciudad</label>
+                                        <input
+                                            class="form-control"
+                                            name="city"
+                                            type="text"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="col mt-3">
+                                    <label class="form-label">Código postal</label>
+                                    <input
+                                        class="form-control"
+                                        name="pinCode"
+                                        type="text"
+                                        required />
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">Contraseña</label>
+                                        <input
+                                            class="form-control"
+                                            name="password"
+                                            type="password"
+                                            required />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Confirmar Contraseña</label>
+                                        <input
+                                            class="form-control"
+                                            name="confirmPassword"
+                                            type="password"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="col mt-3">
+                                    <label class="form-label">Imagen de perfil</label>
+                                    <input
+                                        class="form-control"
+                                        name="file"
+                                        type="file"
+                                        />
+                                </div>
+                                <button
+                                    type="submit"
+                                    class="btn bg-danger mt-4 text-white col-md-12">
+                                    Registrarse
+                                </button>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="#" class="text-decoration-none">¿Olvidaste tu contraseña?</a><br>
+                            ¿Ya tienes una cuenta?
+                            <a href="/signin" class="text-decoration-none">Iniciar sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

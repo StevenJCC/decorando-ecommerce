@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de usuarios</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Lista de usuarios</h2>
+
+    <a href="#" class="btn btn-danger mb-3">Agregar usuario</a>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>SL N°</th>
+            <th>Perfil</th>
+            <th>Nombre</th>
+            <th>Correo electrónico</th>
+            <th>Móvil</th>
+            <th>Dirección</th>
+            <th>Estado</th>
+            <th>Creado en</th>
+            <th>Comportamiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="item, iterStat : ${userData}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${item.user.role}">ROLE_USER</td>
+            <td th:text="${item.user.fullName}">Nombre completo</td>
+            <td th:text="${item.user.email}">correo@ejemplo.com</td>
+            <td th:text="${item.user.mobile}">123456789</td>
+            <td th:text="${item.user.address}">Calle 123</td>
+            <td th:text="${item.user.status}">Activo</td>
+            <td th:text="${item.formattedDateTimeCreatedAt}">01-01-2024 10:00:00</td>
+            <td>
+              <!-- Botones de acción -->
+              <a href="#" class="btn btn-sm btn-primary">Editar</a>
+              <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(userData)}">
+            <td colspan="9" class="text-center text-muted">No hay usuarios registrados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
+
